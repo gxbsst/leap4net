@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+	http://www.springframework.org/schema/mvc
+	http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+	http://www.springframework.org/schema/util
+	http://www.springframework.org/schema/util/spring-util-2.0.xsd">
+
+	<mvc:resources mapping="/css/**" location="css/" />
+
+	<mvc:resources mapping="/images/**" location="images/" />
+
+	<mvc:resources mapping="/js/**" location="js/" />
+	
+	<mvc:resources mapping="*.jsp" location="*.jsp" />
+
+	<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping" />
+
+	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+		<property name="messageConverters">
+			<util:list id="beanList">
+				<bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter" />
+			</util:list>
+		</property>
+	</bean>
+
+	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+		<property name="templateLoaderPath" value="/WEB-INF/ftl" />
+		<property name="defaultEncoding" value="utf-8" />
+		<property name="freemarkerSettings">
+			<props>
+				<prop key="template_update_delay">10</prop>
+				<prop key="locale">zh_CN</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+		<property name="suffix" value=".html" />
+		<property name="contentType" value="text/html;charset=utf-8" />
+		<property name="exposeRequestAttributes" value="true" />
+		<property name="exposeSessionAttributes" value="true" />
+		<property name="requestContextAttribute" value="request" />
+	</bean>
+
+	<bean class="com.sidways.leap.action.HomeAction" />
+
+	<bean class="com.sidways.leap.action.ContactAction" />
+
+	<bean class="com.sidways.leap.action.FaqAction" />
+
+	<bean class="com.sidways.leap.action.HowtoAction" />
+	
+	<bean class="com.sidways.leap.action.WhyAction" />
+	
+	<bean class="com.sidways.leap.action.OrderAction" >
+		<property name="orderService" ref="orderService"/>
+		<property name="payService" ref="payService"/>
+	</bean>
+	
+	<bean class="com.sidways.leap.action.AccountAction" >
+		<property name="invitationService" ref="invitationService"/>
+		<property name="orderService" ref="orderService"/>
+		<property name="userService" ref="userService"/>
+	</bean>
+	
+	<bean class="com.sidways.leap.action.IPAction">
+		<property name="ipService" ref="ipService"/>
+	</bean>
+	
+	<bean class="com.sidways.leap.action.CallBackAction">
+		<property name="callBackService" ref="callBackService"/>
+		<property name="orderService" ref="orderService"/>
+	</bean>
+	
+	<bean class="com.sidways.leap.action.ResourceAction">
+		<property name="resourceService" ref="howToResourceService"/>
+	</bean>
+	
+	<bean class="com.sidways.leap.action.DiscountAction">
+		<property name="discountService" ref="discountService"/>
+	</bean>
+	
+	<bean class="com.sidways.leap.action.CancelAction"/>
+	
+	<bean class="com.sidways.leap.action.CheckoutAction"/>
+	
+	<bean class="com.sidways.leap.action.OrderConfirmAction"/>
+</beans>
+

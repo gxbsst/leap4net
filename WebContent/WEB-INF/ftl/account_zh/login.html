@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>LEAP4.net</title>
+<link href="${request.contextPath}/css/login.css" rel="stylesheet" type="text/css" />
+<script src="${request.contextPath}/js/livevalidation_standalone.js"></script>
+</head>
+<body>
+<#if error??>
+	<script>
+		alert("您输入的信息不正确");
+	</script>
+</#if>
+<div id="wrapper_login">
+    	<div id="login_mainholder">
+        	<div class="login_top">
+        	<div class="logo">
+        	<a href="#">
+        		<img src="${request.contextPath}/images/logo.gif" width="346" height="40" alt="Leap4.net" /></a>
+        	</div>
+<!--            <div class="version2"><a href="${request.contextPath}/changeLocal?local=_zh">中文</a> ｜ <a href="${request.contextPath}/changeLocal">English</a></div>
+-->
+            <div class="version2"><a href="${request.contextPath}/changeLocal">English</a> ｜ <a href="${request.contextPath}/changeLocal?local=_zh">中文</a></div>
+
+            </div>
+            <div class="mainbox clearfix">
+            	<form id="invitationApply" action="${request.contextPath}/guest" method="post">
+	            	<div class="box_welcome">
+	                  <div class="content">
+	                   	<p class="mb15" style="font-size:16px;">请输入邀请码:<br />
+	                    <p class="mb15">
+	                    <input id="code" name="code" type="text" style="width:250px;" />
+	                    </p>
+	                    <p class="mb15">
+	                    	<a href="#" onclick="readyInvitationSubmit()">
+	                 	   		<img src="${request.contextPath}/images/btn_enter.gif" alt="Enter" width="123" height="43" />
+	                 	   	</a>
+	                    </p>
+	                    <p>还没有邀请码??</p>
+	                    <p>请发送邮件给我们 &lt;
+	                    <a href="mailto:leap4net@sidways.com">点击此处</a>&gt; </p>
+	                  </div>
+	                </div>
+                </form>
+                <div class="box_login">
+                	<form id="doLogin" action="${request.contextPath}/doLogin" method="post">
+	                	<table width="360" border="0" cellspacing="0" cellpadding="0">
+	                      <tr>
+	                        <th width="33%">用户名</th>
+	                        <td width="67%">
+	                      <input id="username" name="username" type="text" style="width:200px;" /></td>
+	                      </tr>
+	                      <tr>
+	                      <th>密码</th>
+	                      <td>
+	                      <input id="password" name="password" type="password" style="width:200px;" />
+	                      </td>
+	                      </tr>
+	                      <tr>
+	                      <td>&nbsp;</td>
+	                      <td>
+	                      	<p class="mb10"><a href="${request.contextPath}/forget">忘记密码?</a></p>
+	                      	<p class="mb15">
+	                      		<img src="${request.contextPath}/images/btn_enter.gif" width="123" height="43" alt="Enter" onclick="readyLoginSubmit()"/></a>
+	                      	<p>
+	                        <p>*使用您的用户名和密码登入 <br />
+	                       	    </p>
+	                        </td>
+	                      </tr>
+	                    </table>
+                    </form>
+              </div>
+                <div class="clear"></div>
+            </div>
+    </div>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+	var username = new LiveValidation('username',{onlyOnSubmit:true,validMessage:' ',wait:1000} );
+	username.add(Validate.Presence,{failureMessage:" "});
+	var password = new LiveValidation('password',{onlyOnSubmit:true,validMessage:' ',wait:1000} );
+	password.add(Validate.Presence,{failureMessage:" "});
+	var code = new LiveValidation('code',{onlyOnSubmit:true,validMessage:' ',wait:1000} );
+	code.add(Validate.Presence,{failureMessage:" "});
+	
+	var automaticInvitationOnSubmit = document.getElementById("invitationApply").onsubmit;
+	document.getElementById("invitationApply").onsubmit = function(){
+		var valid = automaticInvitationOnSubmit();
+		if(valid){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	var automaticLoginOnSubmit = document.getElementById("doLogin").onsubmit;
+	document.getElementById("doLogin").onsubmit = function(){
+		var valid = automaticLoginOnSubmit();
+		if(valid){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	function readyInvitationSubmit(){
+		if(document.getElementById('invitationApply').onsubmit()){
+			document.getElementById('invitationApply').submit();
+		}else{
+			alert("请填写邀请码");
+		}
+	}
+	
+	function readyLoginSubmit(){
+		if(document.getElementById('doLogin').onsubmit()){
+			document.getElementById('doLogin').submit();
+		}else{
+			alert("请填写用户名,密码");
+		}
+	}
+</script>

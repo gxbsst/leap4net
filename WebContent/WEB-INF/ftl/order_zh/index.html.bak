@@ -1,0 +1,148 @@
+<#assign security=JspTaglibs["/WEB-INF/security.tld"]>
+<script src="${request.contextPath}/js/livevalidation_standalone.js"></script>
+<script type="text/javascript" src="${request.getContextPath()}/js/jquery-1.2.6.js"></script>
+<script>
+	function containService(){
+		email = document.getElementById("email");
+		if(!email.readOnly){
+			$.ajax({
+				type: "GET",
+				dataType: "json",
+				data: {username: email.value},
+				url: "${request.getContextPath()}/contain",
+				success: function callbackFunction(data){
+					if(data == true){
+						alert("该用户已存在");
+					}else{
+						readySubmit();
+					}
+				}
+			}); 
+		}else{
+			readySubmit();
+		}
+	}
+
+        function discountService(){
+                var sale = document.getElementById("sale").value;
+                var type = $("input[name='type']:checked").val();
+                var price = 0;
+                if(type == 'DAY'){
+                        price = 9;
+                }else if(type == 'MONTH'){
+                        price = 49;
+                }else if(type == 'YEAR'){
+                        price = 399;
+                }
+                if(!sale.readOnly){
+                        $.ajax({
+                                type: "GET",
+                                dataType: "json",
+                                data: {price: price, code: sale},
+                                url: "${request.getContextPath()}/discount",
+                                success: function callbackFunction(data){
+                                        alert("Discounted prices: " + data.price);
+                                }
+                        }); 
+                }else{
+                        readySubmit();
+                }
+        }
+
+</script>
+
+
+<div class="order_table">
+	<div class="order_left">
+		<div class="main">
+			<h1>简单的设置就能让您畅游网络,不再被束缚</h1>
+			<p>今天就让我们为无限畅游网络欢呼吧!</p>
+			<p>如果您是年付用户,可以享受30天内无条件退款.</p>
+			<p>隐私保密.我们不会将您的个人信息公开,并且只会在向您提供我们的服务时联系您.</p>
+		</div>
+	</div>
+	<div class="order_right">
+		<div class="main">
+			<form id="pay" action="${request.contextPath}/pay" method="post">
+			<div class="m1">
+				<label><input type="radio" name="type" value="DAY"/></label>
+			</div>
+			<div class="m6">
+				<label><input type="radio" name="type" value="MONTH" /></label>
+			</div>
+			<div class="m12">
+				<label><input type="radio" name="type" value="YEAR" checked="checked"/></label>
+			</div>
+			<div class="clear"></div>
+			<div class="order_info">
+				<div class="email">
+					<@security.authorize ifAnyGranted="USER_GUEST">
+					<p>请输入您的Email地址:</p>
+					<p>
+						<input id="email" name="email" type="text" style="width: 300px;" />
+					</p>
+                                        <p>
+                                                输入你的折扣码:<input id="sale" name="sale" type="text" style="width: 128px;" onblur="discountService()"/>
+                                        </p>
+
+					</@security.authorize>
+					<@security.authorize ifAnyGranted="USER_NORMAL">
+					<p>Your email address:</p>
+					<p>
+						<input id="email" name="email" type="text" style="width: 300px;" value="<@security.authentication property="name" />" readonly="true"/>
+					</p>
+					</@security.authorize>
+				</div>
+				<div class="payment">
+					<p>选择付款方式:</p>
+					<p>
+						<label>
+							<input name="payment" type="radio" checked value="ALIPAY" /> 
+							<img src="${request.contextPath}/images/zhifubao.gif" width="51" height="32" />
+						</label>
+<!--						<label>
+							<input name="payment" type="radio" checked value="PAYPAL" /> 
+							<img src="${request.contextPath}/images/paypal.gif" width="51" height="32" />
+						</label>
+-->
+					</p>
+				</div>
+				<div class="clear"></div>
+				<div class="order_btn">
+					<a href="#" onclick="containService()">
+					<img src="${request.contextPath}/images/btn_order.gif" alt="Order Now" width="163" height="58" /></a>
+				</div>
+				<div class="order_btn_info">
+					*一旦您点击"立即定购"按钮并且完成了支付, <br />
+					您将收到一份包含您用户名和密码的邮件.
+				</div>
+				<div class="clear"></div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<div class="clear"></div>
+</div>
+<script type="text/javascript">
+	var email = new LiveValidation('email',{onlyOnSubmit:true,validMessage:' ',wait:1000});
+	email.add(Validate.Email,{failureMessage:" "});
+	var empty = new LiveValidation('email',{onlyOnSubmit:true,validMessage:' ',wait:1000} );
+	empty.add(Validate.Presence,{failureMessage:" "});
+	var automaticOnSubmit = document.getElementById("pay").onsubmit;
+	document.getElementById("pay").onsubmit = function(){
+		var valid = automaticOnSubmit();
+		if(valid){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	function readySubmit(){
+		if(document.getElementById('pay').onsubmit()){
+			document.getElementById('pay').submit();
+		}else{
+			alert("Email¸ñÊ½²»ÕýÈ·");
+		}
+	}
+</script>

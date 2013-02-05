@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+	http://www.springframework.org/schema/util
+	http://www.springframework.org/schema/util/spring-util-2.0.xsd">
+
+	<bean id="abstractBaseDao" abstract="true">
+		<property name="template">
+			<bean class="org.springframework.orm.hibernate3.HibernateTemplate">
+				<property name="sessionFactory" ref="sessionFactory" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="userDao" class="com.sidways.leap.dao.impl.UserDaoImpl" parent="abstractBaseDao" />
+
+	<bean id="discountDao" class="com.sidways.leap.dao.impl.DiscountDaoImpl"/>
+	
+	<bean id="invitationDao" class="com.sidways.leap.dao.impl.InvitationDaoImpl" parent="abstractBaseDao" />
+
+	<bean id="orderDao" class="com.sidways.leap.dao.impl.OrderDaoImpl" parent="abstractBaseDao" />
+
+	<bean id="refundDao" class="com.sidways.leap.dao.impl.RefundDaoImpl" parent="abstractBaseDao" />
+	
+	<bean id="userService" class="com.sidways.leap.service.impl.UserServiceImpl">
+		<property name="baseDao" ref="userDao" />
+		<property name="userDao" ref="userDao" />
+		<property name="shellService" ref="shellService"/>
+		<property name="mailService" ref="mailService"/>
+	</bean>
+
+	<bean id="invitationService" class="com.sidways.leap.service.impl.InvitationServiceImpl">
+		<property name="baseDao" ref="invitationDao" />
+		<property name="invitationDao" ref="invitationDao" />
+		<property name="userService" ref="userService" />
+		<property name="validity" value="${invitation_validity}" />
+		<property name="maxCount" value="${invitation_maxCount}" />
+	</bean>
+
+	<bean id="orderService" class="com.sidways.leap.service.impl.OrderServiceImpl">
+		<property name="baseDao" ref="orderDao" />
+		<property name="orderDao" ref="orderDao" />
+		<property name="userDao" ref="userDao" />
+		<property name="refundDao" ref="refundDao" />
+		<property name="userService" ref="userService" />
+		<property name="mailService" ref="mailService" />
+		<property name="shellService" ref="shellService"/>
+		<property name="discountService" ref="discountService"/>
+		<property name="pricesZh">
+			<util:map map-class="java.util.HashMap" key-type="com.sidways.leap.service.OrderService$Type" value-type="java.lang.Double">
+				<entry key="DAY" value="${price_zh_day}" />
+				<entry key="MONTH" value="${price_zh_month}" />
+				<entry key="YEAR" value="${price_zh_year}" />
+			</util:map>
+		</property>
+		<property name="pricesEn">
+			<util:map map-class="java.util.HashMap" key-type="com.sidways.leap.service.OrderService$Type" value-type="java.lang.Double">
+				<entry key="DAY" value="${price_en_day}" />
+				<entry key="MONTH" value="${price_en_month}" />
+				<entry key="YEAR" value="${price_en_year}" />
+			</util:map>
+		</property>
+	</bean>
+
+	<bean id="ipService" class="com.sidways.leap.service.impl.IPServiceImpl" />
+
+	<bean id="mainSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="${mail_host}" />
+		<property name="username" value="${mail_user}" />
+		<property name="password" value="${mail_pass}" />
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.smtp.auth">true</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<bean id="backUpSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="${mail_backUp_host}" />
+		<property name="username" value="${mail_backUp_user}" />
+		<property name="password" value="${mail_backUp_pass}" />
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.smtp.auth">true</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<bean id="mailService" class="com.sidways.leap.service.impl.MailServiceImpl">
+		<property name="refundNotifier" value="${mail_refund}" />
+		<property name="orderService" ref="orderService" />
+		<property name="contents">
+			<util:map map-class="java.util.HashMap" key-type="com.sidways.leap.service.MailService$Type" value-type="java.lang.String">
+				<entry key="PAYED" value="${mail_content_payed}" />
+				<entry key="DUEDATE" value="${mail_content_duedate}" />
+				<entry key="PASSWORD" value="${mail_content_password}" />
+				<entry key="REFUND" value="${mail_content_refund}" />
+			</util:map>
+		</property>
+		<property name="senders">
+			<list>
+			    <ref bean="mainSender" /> 
+				<ref bean="backUpSender" />
+			</list>
+		</property>
+		<property name="senderList">
+			<list>
+			    <value>leap4net@sidways.com</value>
+			    <value>leap4net@163.com</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="shellService" class="com.sidways.leap.service.impl.ShellServiceImpl">
+		<property name="createAt" value="${shell_createAt}" />
+		<property name="removeAt" value="${shell_removeAt}" />
+		<property name="changePw" value="${shell_changePw}" />
+		<property name="sync" value="${shell_sync}" />
+	</bean>
+	
+	<bean id="payService" class="com.sidways.leap.service.impl.AlipayServiceImpl">
+		<property name="url" value="${pay_alipay_url}" />
+		<property name="service" value="${pay_alipay_service}" />
+		<property name="encoding" value="${pay_alipay_encoding}" />
+		<property name="subject" value="${pay_subject}" />
+		<property name="paymentType" value="${pay_alipay_payment_type}" />
+		<property name="sellerEmail" value="${pay_alipay_seller_email}" />
+		<property name="notifyCall" value="${pay_alipay_notify_url}" />
+		<property name="returnCall" value="${pay_alipay_return_url}" />
+		<property name="partner" value="${pay_alipay_partner}" />
+		<property name="key" value="${pay_alipay_key}" />
+	</bean>
+	
+	<bean id="howToResourceService" class="com.sidways.leap.service.impl.HowToResourceServiceImpl">
+		<property name="dir" value="${config_howToDir}" />
+	</bean>
+	
+	<bean id="callBackService" class="com.sidways.leap.service.impl.CallBackServiceImpl">
+		<property name="encoding" value="${pay_alipay_encoding}" />
+		<property name="partner" value="${pay_alipay_partner}" />
+		<property name="key" value="${pay_alipay_key}" />
+		<property name="orderService" ref="orderService" />
+	</bean>
+	
+	<bean id="discountService" class="com.sidways.leap.service.impl.DiscountServiceImpl">
+		<property name="discountDao" ref="discountDao" />
+	</bean>
+</beans>
+

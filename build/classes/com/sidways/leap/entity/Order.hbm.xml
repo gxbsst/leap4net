@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping
+PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.sidways.leap.entity">
+	<class name="Order" table="leap_order">
+		<id name="id">
+			<generator class="uuid.hex" />
+		</id>
+
+		<property name="type" />
+
+		<property name="price" />
+
+		<property name="created" />
+		
+		<property name="deadline" />
+				
+		<property name="state">
+			<type name="org.hibernate.type.EnumType">
+				<param name="enumClass">com.sidways.leap.entity.Order$State</param>
+			</type>
+		</property>		
+				
+		<many-to-one name="owner"/>
+
+	</class>
+</hibernate-mapping>

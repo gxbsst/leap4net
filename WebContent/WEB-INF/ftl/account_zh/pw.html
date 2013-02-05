@@ -1,0 +1,74 @@
+<script type="text/javascript" src="${request.getContextPath()}/js/jquery-1.2.6.js"></script>
+<script src="${request.contextPath}/js/livevalidation_standalone.js"></script>
+<script>
+	function changePwService(){
+		var currentPw = document.getElementById("currentPassword").value;
+		var pw = document.getElementById("password").value;
+		var confirmPw = document.getElementById("confirmPassword").value;
+		if(pw != confirmPw){
+			alert("两次输入密码不一致!");
+			return;
+		}
+		$.ajax({
+			type: "POST",
+			dataType: "json",
+			data: {currentPassword: currentPw, password: pw},
+			url: "${request.getContextPath()}/changePw",
+			success: function callbackFunction(data){
+				if(data.error != null){
+					alert(data.error);
+				}else{
+					alert(data.message);
+				}
+			}
+		}); 
+	}
+</script>
+<div class="main_content" style="min-height: ;">
+	<div class="myorder_table">
+		<div class="title">
+			<img src="${request.contextPath}/images/changepw_title.jpg" alt="Change Password" width="960" height="71" />
+		</div>
+		<div class="mid">
+			<div class="chps">
+				<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+					<tr>
+						<th>当前密码</th>
+						<td>
+							<label> 
+								<input type="password" id="currentPassword" id="textfield" width="150" />
+							</label>
+						</td>
+					</tr>
+					<tr>
+						<th>输入新密码</th>
+						<td>
+							<label> 
+								<input type="password" id="password" id="textfield2" width="150" />
+							</label>
+						</td>
+					</tr>
+					<tr>
+						<th>再次输入新密码</th>
+						<td>
+							<label> 
+								<input type="password" id="confirmPassword" id="textfield3" width="150" />
+							</label>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class="order_action">
+				<a href="#" onclick="changePwService()">
+					<img class="firstchild" src="${request.contextPath}/images/btn_save.gif" alt="Renew" width="144" height="44" />
+				</a>
+				<a href="${request.contextPath}/home">
+					<img src="${request.contextPath}/images/btn_cancel.gif" alt="Payment" width="144" height="44" />
+				</a>
+			</div>
+		</div>
+		<div class="bot">
+			<img src="${request.contextPath}/images/myorder_b.jpg" width="960" height="36" />
+		</div>
+	</div>
+</div>

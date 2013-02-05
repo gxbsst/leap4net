@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Leap4.net</title>
+<link href="${request.contextPath}/css/login.css" rel="stylesheet" type="text/css" />
+</head>
+<script src="${request.contextPath}/js/livevalidation_standalone.js"></script>
+<body>
+<div id="wrapper_login">
+    	<div id="login_mainholder">
+    		<form id="recovered" action="${request.contextPath}/recovered" method="POST">
+        	<div class="logo"><a href="login.html">
+        		<img src="${request.contextPath}/images/logo.gif" width="346" height="40" alt="Leap4.net" /></a></div>
+            	<div class="mainbox clearfix">
+            		<div class="forget_t">
+            		<img src="${request.contextPath}/images/forget_t.jpg" alt="Forget Password" width="925" height="71" /></div>
+                	<div class="forget_content">
+                        <div class="chps">
+                        <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+                          <tr>
+                            <td colspan="2">
+                            <p style="padding-left:50px;">To reset your password, enter the username you use to sign in to leap4net, the username is an email address.</p></td>
+                          </tr>
+                          <tr>
+                            <th class="username">Username</th>
+                            <td><label>
+                            	<input type="text" name="username" id="username" width="150" />
+                            </label></td>
+                          </tr>
+                        </table>
+                        <div class="order_action">
+                        <a href="#" onclick="readyRecoveredSubmit()">
+                        	<img class="firstchild" src="${request.contextPath}/images/btn_send2.gif" alt="Renew" width="144" height="44" />
+                        </a>
+                        </div>
+                        </div>
+                    </div>
+            </div>
+            </form>
+    </div>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+	var username = new LiveValidation('username',{onlyOnSubmit:true,validMessage:' ',wait:1000} );
+	username.add(Validate.Presence,{failureMessage:" "});
+	var automaticInvitationOnSubmit = document.getElementById("recovered").onsubmit;
+	document.getElementById("recovered").onsubmit = function(){
+		var valid = automaticInvitationOnSubmit();
+		if(valid){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+	function readyRecoveredSubmit(){
+		if(document.getElementById('recovered').onsubmit()){
+			alert("请及时查看您的邮箱获取密码");
+			document.getElementById('recovered').submit();
+		}else{
+			alert("请填用户名");
+		}
+	}
+</script>

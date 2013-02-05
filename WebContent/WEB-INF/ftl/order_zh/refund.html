@@ -1,0 +1,48 @@
+<script src="${request.contextPath}/js/livevalidation_standalone.js"></script>
+<form id="refund" action="${request.contextPath}/applyRefund" method="post">
+<div class="main_content" style="min-height: ;">
+	<div class="myorder_table">
+		<div class="title">
+			<img src="${request.contextPath}/images/refund_title.jpg" alt="Refund" width="960" height="71" />
+		</div>
+		<div class="mid">
+			<div class="refund">
+				<p>退款原因</p>
+				<p>
+					<textarea id="content" name="content" cols="" rows=""></textarea>
+				</p>
+			</div>
+			<div class="order_action">
+				<a href="#" onclick="readyRefundSubmit()">
+				<img class="firstchild" src="${request.contextPath}/images/btn_send.gif" alt="Send" width="144" height="44" /></a>
+				<a href="${request.contextPath}/home">
+				<img src="${request.contextPath}/images/btn_cancel.gif" alt="Cancel" width="144" height="44" /></a>
+			</div>
+		</div>
+		<div class="bot">
+			<img src="${request.contextPath}/images/myorder_b.jpg" width="960" height="36" />
+		</div>
+	</div>
+</div>
+</form>
+<script type="text/javascript">
+	var content = new LiveValidation('content',{onlyOnSubmit:true,validMessage:' ',wait:1000} );
+	content.add(Validate.Presence,{failureMessage:" "});
+	var automaticInvitationOnSubmit = document.getElementById("refund").onsubmit;
+	document.getElementById("refund").onsubmit = function(){
+		var valid = automaticInvitationOnSubmit();
+		if(valid){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	function readyRefundSubmit(){
+		if(document.getElementById('refund').onsubmit()){
+			document.getElementById('refund').submit();
+		}else{
+			alert("请填写退款原因");
+		}
+	}
+</script>

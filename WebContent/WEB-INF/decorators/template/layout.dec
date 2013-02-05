@@ -1,0 +1,132 @@
+<#assign decorator=JspTaglibs["/WEB-INF/sitemesh-decorator.tld"]>
+<#assign security=JspTaglibs["/WEB-INF/security.tld"]>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>LEAP4.net</title>
+<#if LAU??><link href="${request.contextPath}/css/main.css" rel="stylesheet" type="text/css" /></#if>
+<#if LAU?? == false><link href="${request.contextPath}/css/main_zh.css" rel="stylesheet" type="text/css" /></#if>
+</head>
+
+<script type="text/javascript" src="${request.getContextPath()}/js/jquery-1.2.6.js"></script>
+<script>
+	function ipService(){
+		$.ajax({
+			type: "GET",
+			dataType: "json",
+			url: "${request.getContextPath()}/ip",
+			success: function callbackFunction(data){
+				var content;
+				if(data.error != null){
+					content=data.error;
+				}else{
+					content=data.message;
+				}
+				document.getElementById("ip").innerHTML=content;
+			}
+		}); 
+
+	}
+	
+	window.onload = ipService;
+</script>
+
+<body <@decorator.getProperty property="body.class" writeEntireProperty="true"/>>
+	<div id="wrapper">
+        <div id="top">
+        	<div class="main">
+                <div class="user">
+	                <span class="logout">
+		                <a href="${request.contextPath}/logout">
+		                <img src="${request.contextPath}/images/btn_top_login.jpg" width="80" height="25" alt="logout"/>
+		                </a>
+	                </span>
+	                <span class="username">Hi, <@security.authentication property="name" /></span>
+                </div>
+              <div class="ip">Welcome to Leap4Net
+              </div>
+              <div class="clear"></div>
+            </div>
+        </div>
+        
+        <div id="mainholder">
+            <div id="header">
+                <div class="main">
+                    <div class="logo">
+                    <a href="index.html">
+                   	 <img src="${request.contextPath}/images/logo.gif" width="346" height="40" />
+                   	</a>
+                   	</div>
+                    <div class="navi">
+                        <ul class="clearfix">
+                            <li class="firstchild"><a href="${request.contextPath}/home">
+                            <#if LAU??>首页</#if>
+                         	<#if LAU?? == false>Home</#if>
+                            </a></li>
+                            <li><a href="${request.contextPath}/why">
+                            <#if LAU??>什么是VPN</#if>
+                         	<#if LAU?? == false>Why VPN</#if>
+                            </a></li>
+                            <li><a href="${request.contextPath}/howto">
+                         	<#if LAU??>配置手册</#if>
+                         	<#if LAU?? == false>Setup HowTo</#if>
+                            </a></li>
+                            <li><a href="${request.contextPath}/faq">FAQ</a></li>
+                        	<@security.authorize ifNotGranted="USER_ADMIN">
+                            <li><a href="${request.contextPath}/order">
+                            <#if LAU??>购买套餐</#if>
+                         	<#if LAU?? == false>Order</#if>
+                            </a></li>
+                            </@security.authorize>
+                            <li><a href="${request.contextPath}/contact">
+                            <#if LAU??>联系我们</#if>
+                         	<#if LAU?? == false>Contact Us</#if>
+                            </a></li>
+                         	<@security.authorize ifNotGranted="USER_GUEST">
+                            <li><a href="${request.contextPath}/account">
+		      			<#if LAU??>我的账户</#if>
+                                <#if LAU?? == false>My Account</#if>
+				</a></li>
+
+                            </@security.authorize>
+                        </ul>
+                    </div>
+              </div>
+            </div>
+
+			<@decorator.body/>
+		
+        </div>
+       	<div id="footer">
+        	<div class="main">
+                <p class="mb10">
+                <a href="${request.contextPath}/home">
+                <#if LAU??>首页</#if>
+                <#if LAU?? == false>Home</#if>
+                </a> | 
+                <a href="${request.contextPath}/why">
+                <#if LAU??>什么是VPN</#if>
+             	<#if LAU?? == false>Why VPN</#if>
+                </a> | 
+                <a href="${request.contextPath}/faq">FAQ</a> | 
+                <a href="${request.contextPath}/howto">
+                <#if LAU??>配置手册</#if>
+             	<#if LAU?? == false>Setup HowTo</#if>
+                </a> | 
+            	<@security.authorize ifNotGranted="USER_ADMIN">
+                <a href="${request.contextPath}/order">
+              	<#if LAU??>购买套餐</#if>
+             	<#if LAU?? == false>Order</#if>
+                </a> | 
+                </@security.authorize>
+                <a href="${request.contextPath}/contact">
+             	<#if LAU??>联系我们</#if>
+             	<#if LAU?? == false>Contact Us</#if>
+                </a></p>
+                <p>Copyright ©2013 Leap4.Net All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

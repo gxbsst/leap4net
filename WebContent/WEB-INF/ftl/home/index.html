@@ -1,0 +1,147 @@
+<#assign security=JspTaglibs["/WEB-INF/security.tld"]>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>LEAP4.net</title>
+<link href="${request.contextPath}/css/main.css" rel="stylesheet" type="text/css" />
+</head>
+
+<script type="text/javascript" src="${request.getContextPath()}/js/jquery-1.2.6.js"></script>
+<script>
+	function ipService(){
+		$.ajax({
+			type: "GET",
+			dataType: "json",
+			url: "${request.getContextPath()}/ip",
+			success: function callbackFunction(data){
+				var content;
+				if(data.error != null){
+					content=data.error;
+				}else{
+					content=data.message;
+				}
+				document.getElementById("ip").innerHTML=content;
+			}
+		}); 
+
+	}
+	
+	window.onload = ipService;
+</script>
+
+<body class="home">
+	<div id="wrapper">
+        <div id="top">
+        	<div class="main">
+                <div class="user">
+                <span class="logout">
+                <@security.authorize ifNotGranted="USER_ADMIN">
+                <@security.authorize ifNotGranted="USER_GUEST">
+                <a href="${request.contextPath}/login">
+                	<img src="${request.contextPath}/images/btn_top_login.jpg" width="80" height="25" alt="logout" />
+                </a>
+                </@security.authorize>
+                </@security.authorize>
+                <@security.authorize ifNotGranted="USER_NORMAL">
+                <a href="${request.contextPath}/login">
+                	<img src="${request.contextPath}/images/login_btn.gif" width="80" height="25" alt="logout" />
+                </a>
+                </@security.authorize>
+                </span>
+                <span class="username">Hi, <@security.authentication property="name" /></span></div>
+              	<div class="ip">Welcome to Leap4Net 
+              	<div class="clear"></div>
+            </div>
+        </div>
+        <div id="header">
+   	    <div class="main">
+            	<div class="logo">
+            	<a href="index.html">
+            	<img src="${request.contextPath}/images/logo.gif" width="346" height="40" />
+            	</a></div>
+                <div class="navi">
+                     <ul class="clearfix">
+                            <li class="firstchild"><a href="${request.contextPath}/home">
+                            <#if LAU??>首页</#if>
+                                <#if LAU?? == false>Home</#if>
+                            </a></li>
+                            <li><a href="${request.contextPath}/why">
+                            <#if LAU??>什么是VPN</#if>
+                                <#if LAU?? == false>Why VPN</#if>
+                            </a></li>
+                            <li><a href="${request.contextPath}/howto">
+                                <#if LAU??>配置手册</#if>
+                                <#if LAU?? == false>Setup HowTo</#if>
+                            </a></li>
+                            <li><a href="${request.contextPath}/faq">FAQ</a></li>
+                                <@security.authorize ifNotGranted="USER_ADMIN">
+                            <li><a href="${request.contextPath}/order">
+                            <#if LAU??>购买套餐</#if>
+                                <#if LAU?? == false>Order</#if>
+                            </a></li>
+                            </@security.authorize>
+                            <li><a href="${request.contextPath}/contact">
+                            <#if LAU??>联系我们</#if>
+                                <#if LAU?? == false>Contact Us</#if>
+                            </a></li>
+                                <@security.authorize ifNotGranted="USER_GUEST">
+                            <li><a href="${request.contextPath}/account">My Account</a></li>
+                            </@security.authorize>
+                        </ul>
+
+                </div>
+                <div class="intro">
+                	<div class="content">
+                      <h1>FREE YOUR INTERNET</h1>
+                      <p class="mb30">Access blocked sites anytime, anywhere!
+                          <br />
+                          Speed Optimized Global VPN Network
+                          <br />
+                      	  Super-simple setup within a few minutes</p>
+                          <p>
+                          <@security.authorize ifNotGranted="USER_ADMIN">
+                          <a href="${request.contextPath}/order">
+                          <img src="${request.contextPath}/images/btn_seeplan.gif" width="300" height="50" />
+                          </a>
+                          </@security.authorize>
+                          </p>
+                    </div>
+              </div>
+          </div>
+        </div>
+        <div class="location">
+        	<div class="main">
+            	<p><span>ACCESS TO ALL OUR SERVERS: </span>
+            	<img src="${request.contextPath}/images/f_ch.jpg" width="48" height="34" align="absmiddle" />
+            	<img src="${request.contextPath}/images/f_us.jpg" width="48" height="34" align="absmiddle" />
+            	<img src="${request.contextPath}/images/flag_finland.jpg" width="48" height="34" align="absmiddle" />
+            	<img src="${request.contextPath}/images/flag_hong_kong.jpg" width="48" height="34" align="absmiddle" />
+            	<img src="${request.contextPath}/images/flag_macau.jpg" width="48" height="34" align="absmiddle" />
+            	<img src="${request.contextPath}/images/f_jp.jpg" width="48" height="34" align="absmiddle" />
+            	<img src="${request.contextPath}/images/flag_australia.jpg" width="48" height="34" align="absmiddle" />
+            	<img src="${request.contextPath}/images/flag_bolivia.jpg" width="48" height="34" align="absmiddle" />
+            	<img src="${request.contextPath}/images/flag_south_korea.jpg" width="48" height="34" align="absmiddle" />
+            	<img src="${request.contextPath}/images/flag_sweden.jpg" width="48" height="34" align="absmiddle" /></p>
+            </div>
+        </div>
+        <div id="mainholder">
+        	<div style="height:300px;"></div>
+        </div>
+        <div id="footer">
+        	<div class="main">
+                <p class="mb10">
+                <a href="${request.contextPath}/home">Home</a> | 
+                <a href="${request.contextPath}/why">Why VPN</a> | 
+                <a href="${request.contextPath}/faq">FAQ</a> | 
+                <a href="${request.contextPath}/howto">Setup Tutorials</a> | 
+            	<@security.authorize ifNotGranted="USER_ADMIN">
+                <a href="${request.contextPath}/order">Order</a> | 
+                </@security.authorize>
+                <a href="${request.contextPath}/contact">Contact Us</a></p>
+                <p>Copyright ©2013 Leap4.Net All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

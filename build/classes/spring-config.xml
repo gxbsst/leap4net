@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+	<bean class="com.sidways.leap.config.FileSystemPropertyPlaceholderConfigurer">
+		<constructor-arg index="0" value="leap"/>
+		<constructor-arg index="1" value="config.properties"/>
+	</bean>
+	
+<!-- 	<bean class="com.sidways.leap.config.AlipayConfig" init-method="config">
+		<property name="partner" value="${alipay_partner}"/>
+		<property name="seller" value="${alipay_seller}"/>
+		<property name="prKey" value="${alipay_private}"/>
+		<property name="puKey" value="${alipay_public}"/>
+	</bean>
+ -->
+</beans>
+

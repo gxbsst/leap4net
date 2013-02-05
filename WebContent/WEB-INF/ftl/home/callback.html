@@ -1,0 +1,10 @@
+<script type="text/javascript" src="${request.getContextPath()}/js/jquery-1.2.6.js"></script>
+<div style="display: none">
+	<form id="doLogin" action="${request.contextPath}/doLogin" method="post">
+		<input name="username" type="text" value="${user.username}"/>
+		<input name="password" type="password" value="${user.password}"/>
+	</form>
+</div>
+<script>
+	document.getElementById('doLogin').submit();
+</script>

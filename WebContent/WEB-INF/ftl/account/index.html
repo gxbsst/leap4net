@@ -1,0 +1,89 @@
+<#assign security=JspTaglibs["/WEB-INF/security.tld"]>
+<script type="text/javascript" src="${request.getContextPath()}/js/jquery-1.2.6.js"></script>
+<script>
+	function invitationService(){
+		$.ajax({
+			type: "GET",
+			dataType: "json",
+			url: "${request.getContextPath()}/invitation",
+			success: function callbackFunction(data){
+				if(data.error != null){
+					alert(data.error);
+				}else{
+					var reExp = /"/;   
+					document.getElementById("invitation").value = data.code.replace(reExp,"").replace(reExp,"");
+					countInvitationService();
+				}
+			}
+		}); 
+	}
+	
+	function countInvitationService(){
+		$.ajax({
+			type: "GET",
+			dataType: "json",
+			url: "${request.getContextPath()}/countInvitation",
+			success: function callbackFunction(data){
+				document.getElementById("count").innerHTML = data;
+			}
+		}); 
+	}
+</script>
+<div class="main_content">
+	<@security.authorize ifAnyGranted="USER_NORMAL">
+	<div class="myorder_table">
+		<div class="title">
+			<span><a href="${request.contextPath}/pw">Change Password</a></span>
+		</div>
+		<div class="mid">
+			<dl class="clearfix">
+				<dt>Products</dt>
+				<dd>${history.types}</dd>
+			</dl>
+			<dl class="clearfix">
+				<dt>Invoice Date</dt>
+				<dd>${(history.created?date)!}</dd>
+			</dl>
+			<dl class="clearfix">
+				<dt>Next Due Date</dt>
+				<dd>${(history.dueDate?date)!}</dd>
+			</dl>
+			<div class="order_action">
+				<a href="${request.contextPath}/order">
+					<img class="firstchild" src="${request.contextPath}/images/btn_renew.gif" alt="Renew" width="144" height="44" />
+				</a>
+				<#if history.canRefund == true>
+				<a href="${request.contextPath}/refund">
+					<img src="${request.contextPath}/images/btn_refund.gif" alt="Refund" width="144" height="44" />
+				</a>
+				</#if>
+			</div>
+		</div>
+		<div class="bot">
+			<img src="${request.contextPath}/images/myorder_b.jpg" width="960" height="36" />
+		</div>
+	</div>
+	</@security.authorize>
+	<div class="myorder_table">
+		<div class="top">
+			<img src="${request.contextPath}/images/myorder_t.jpg" width="960" height="25" />
+		</div>
+		<div class="mid">
+			<div class="gic">
+			<a href="#">
+				<img src="${request.contextPath}/images/btn_gic.gif" alt="Generate Invitation Code" width="293" height="43" align="absmiddle" onclick="invitationService()"/>
+			</a> 
+				<input id="invitation" type="text" /> 
+				<span><span id="count"></span>/10</span>
+				<br></br>
+				<div>Click "Generate invitation code" button and copy it to your firends.You can create invitation code 10 times per months.</div>
+			</div>
+		</div>
+		<div class="bot">
+			<img src="${request.contextPath}/images/myorder_b.jpg" width="960" height="36" />
+		</div>
+	</div>
+</div>
+<script>
+countInvitationService();
+</script>

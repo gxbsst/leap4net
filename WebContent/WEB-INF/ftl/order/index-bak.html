@@ -1,0 +1,170 @@
+<#assign security=JspTaglibs["/WEB-INF/security.tld"]>
+<script src="${request.contextPath}/js/livevalidation_standalone.js"></script>
+<script type="text/javascript" src="${request.getContextPath()}/js/jquery-1.2.6.js"></script>
+<script>
+	function containService(){
+		email = document.getElementById("email");
+		if(!email.readOnly){
+			$.ajax({
+				type: "GET",
+				dataType: "json",
+				data: {username: email.value},
+				url: "${request.getContextPath()}/contain",
+				success: function callbackFunction(data){
+					if(data == true){
+						alert("Username existed");
+					}else{
+						readySubmit();
+					}
+				}
+			}); 
+		}else{
+			readySubmit();
+		}
+	}
+	
+	function discountService(){
+		var sale = document.getElementById("sale").value;
+		if(sale == ""){
+			return;
+		}
+		var type = $("input[name='type']:checked").val();
+		var price = 0;
+		if(type == 'DAY'){
+			price = 1.99;
+		}else if(type == 'MONTH'){
+			price = 7.99;
+		}else if(type == 'YEAR'){
+			price = 69.99;
+		}
+		if(!sale.readOnly){
+			$.ajax({
+				type: "GET",
+				dataType: "json",
+				data: {type: type, price: price, code: sale},
+				url: "${request.getContextPath()}/discount",
+				success: function callbackFunction(data){
+					alert("Discounted prices: " + data.price);
+				}
+			}); 
+		}else{
+			readySubmit();
+		}
+	}
+	
+	function switchLau(){
+		window.location.href="${request.getContextPath()}/switch";
+	}
+</script>
+
+
+<div class="order_table">
+	<div class="order_left">
+		<div class="main">
+			<h1>Your online freedom and security are just seconds away.</h1>
+			<p>Enjoy unrestricted Internet with 100% anonymity today!</p>
+			<p>All plans offer full access to our global network of VPN
+				servers and our iron-clad 30 day money back guarantee.</p>
+			<p>Privacy Guarantee. We do not share any of your information and
+				will contact you only as needed to provide our service.</p>
+		</div>
+	</div>
+	<div class="order_right">
+		<div class="main">
+			<form id="pay" action="${request.contextPath}/pay" method="post">
+			<div class="m1">
+				<label><input type="radio" name="type" value="DAY"/></label>
+			</div>
+			<div class="m6">
+				<label><input type="radio" name="type" value="MONTH" /></label>
+			</div>
+			<div class="m12">
+				<label><input type="radio" name="type" value="YEAR" checked="checked"/></label>
+			</div>
+			<div class="clear"></div>
+			<div class="order_info">
+				<div class="email">
+					<@security.authorize ifAnyGranted="USER_GUEST">
+					<p>Enter your email address:</p>
+					<p>
+						<input id="email" name="email" type="text" style="width: 300px;" />
+					</p>
+					<p>
+						Enter your sale-off code:<input id="sale" name="sale" type="text" style="width: 128px;" onblur="discountService()"/>
+					</p>
+					</@security.authorize>
+					<@security.authorize ifAnyGranted="USER_NORMAL">
+					<p>Your email address:</p>
+					<p>
+						<input id="email" name="email" type="text" style="width: 300px;" value="<@security.authentication property="name" />" readonly="true"/>
+					</p>
+					</@security.authorize>
+				</div>
+				<div class="payment">
+					<p>Choose a payment method:</p>
+					<p>
+							<input name="payment" type="radio" value="ALIPAY" onclick="switchLau()"/> 
+							<img src="${request.contextPath}/images/zhifubao.gif" width="51" height="32" />
+						</label>
+						<label>
+							<input name="payment" type="radio" checked value="PAYPAL" /> 
+							<img src="${request.contextPath}/images/paypal.gif" width="51" height="32" />
+						</label>
+					</p>
+				</div>
+				<div class="clear"></div>
+				<div class="order_btn">
+					<a href="#" onclick="containService()">
+					<img src="${request.contextPath}/images/btn_order.gif" alt="Order Now" width="163" height="58" /></a>
+				</div>
+				<div class="order_btn_info">
+					*Once you select the "Order Now" button and finished payment, <br />
+					you will revice the username and password in your email inbox.<br />
+					The mail may in your junk box,dont forget to check it.
+				</div>
+				<div class="clear"></div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<div class="clear"></div>
+</div>
+<script type="text/javascript">
+	var email = new LiveValidation('email',{onlyOnSubmit:true,validMessage:' ',wait:1000});
+	email.add(Validate.Email,{failureMessage:" "});
+	var empty = new LiveValidation('email',{onlyOnSubmit:true,validMessage:' ',wait:1000} );
+	empty.add(Validate.Presence,{failureMessage:" "});
+	var automaticOnSubmit = document.getElementById("pay").onsubmit;
+	document.getElementById("pay").onsubmit = function(){
+		var valid = automaticOnSubmit();
+		if(valid){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	function readySubmit(){
+		if(document.getElementById('pay').onsubmit()){
+			document.getElementById('pay').submit();
+		}else{
+			alert("Email格式不正确");
+		}
+	}
+</script>
+
+<#if (response.paypal!)??>
+<form id="checkout" action='checkout' METHOD='POST'>
+	<input type="hidden" name="id" value="${response.order.id}"/>
+	<input type="hidden" name="price" value="${response.order.price}"/>
+</form>
+<script src='https://www.paypalobjects.com/js/external/dg.js' type='text/javascript'></script>
+<script>
+	var dg = new PAYPAL.apps.DGFlow({
+		trigger : 'paypal_submit',
+		expType : 'instant'
+	});
+	
+	document.getElementById("checkout").submit();
+</script>
+</#if>
