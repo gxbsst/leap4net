@@ -21,15 +21,21 @@ public class CheckoutAction {
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String returnURL = "http://www.leap4.net:8088/leapnew/orderconfirm";
 		String cancelURL = "http://www.leap4.net:8088/leapnew/cancel";
+		
 		Map item = new HashMap();
 		item.put("name", "Leap4Net");
 		item.put("amt", request.getParameter("price"));
 		item.put("qty", "1");
 		item.put("outId", request.getParameter("id"));
+		
 		PaypalFunctions ppf = new PaypalFunctions();
 		HashMap nvp = ppf.setExpressCheckout(request.getParameter("price"), returnURL, cancelURL, item);
-		String strAck = nvp.get("ACK").toString();
-		if (strAck != null && strAck.equalsIgnoreCase("Success")) {
+		
+		String strAck = null != nvp && nvp.size() > 0 && null != nvp.get("ACK")? (String)nvp.get("ACK") : null;
+		
+		System.out.println("strAck: " + strAck);
+		
+		if (null != strAck && strAck.equalsIgnoreCase("Success")) {
 			String redirectURL = "https://www.paypal.com/incontext?token=" + nvp.get("TOKEN").toString();
 			response.sendRedirect(redirectURL);
 		} else {

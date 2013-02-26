@@ -226,6 +226,8 @@ public class PaypalFunctions {
 		// deformatNVP( nvpStr );
 		String encodedData = "METHOD=" + methodName + "&VERSION=" + gv_Version + "&PWD=" + gv_APIPassword + "&USER=" + gv_APIUserName + "&SIGNATURE=" + gv_APISignature + nvpStr;
 
+		System.out.println("==================================encodedData=======: " + encodedData);
+		
 		try {
 			URL postURL = new URL(gv_APIEndpoint);
 			HttpURLConnection conn = (HttpURLConnection) postURL.openConnection();

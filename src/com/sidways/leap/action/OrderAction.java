@@ -1,5 +1,6 @@
 package com.sidways.leap.action;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 
 import javax.servlet.http.HttpSession;
@@ -51,6 +52,16 @@ public class OrderAction extends LocalBaseAction {
 	@RequestMapping(value = "/pay", method = RequestMethod.POST)
 	public ModelAndView pay(HttpSession session, Type type, Payment payment, String email, String sale) throws Exception {
 		final Order order = this.orderService.order(type, payment, email, sale);
+		
+		if (null == order.getPrice() || order.getPrice() < 0) {
+			order.setPrice(new Double(0));
+		}
+		
+		DecimalFormat df = new DecimalFormat("#.##");    
+		order.setPrice(Double.valueOf(df.format(order.getPrice())));
+		
+		System.out.println("========================: Generated Order: " + order.getId() + "," + order.getType() + "," + order.getPrice());
+		
 		if (payment.equals(Payment.ALIPAY)) {
 			return new ModelAndView("redirect:" + this.payService.buildPayURL(order));
 		} else {

@@ -194,10 +194,16 @@ public class OrderServiceImpl extends AbstractGeneralDBService<Order> implements
 
 	private Order buildOrder(User user, Payment payment, Type type, String code) {
 		Order order = new Order();
+		
 		order.setOwner(user);
 		order.setType(type.toString());
+		
+		log.info("=====================Start building order: User: " + user.getUsername() + ", Payment: " + payment + ",Type: " + type + ", Code: " + code);
+		
 		if (type.equals(Type.YEAR)) {
-			order.setPrice(Double.valueOf(this.discountService.discount(code, payment.equals(Payment.ALIPAY) ? this.pricesZh.get(type): this.pricesEn.get(type))));
+			Double value = Double.valueOf(this.discountService.discount(code, payment.equals(Payment.ALIPAY) ? this.pricesZh.get(type): this.pricesEn.get(type)));
+			log.info("===================Calculated the price: " + value);
+			order.setPrice(value);
 		} else {
 			order.setPrice(payment.equals(Payment.ALIPAY) ? this.pricesZh.get(type): this.pricesEn.get(type));
 		}
